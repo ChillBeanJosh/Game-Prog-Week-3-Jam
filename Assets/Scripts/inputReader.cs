@@ -67,6 +67,7 @@ public class inputReader : MonoBehaviour
         }
         else if (Input.anyKeyDown)
         {
+            enemyAnimator.SetTrigger("isTaunt");
             Debug.Log("Wrong input, you cannot do anything for " + waitTime + " seconds");
             TriggerWrongInputAnimation();
             StartCoroutine(DisableInputs());

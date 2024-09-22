@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class timerManager : MonoBehaviour
 {
   public TextMeshProUGUI timerText;
+  public TextMeshProUGUI scoreText;
+  public TextMeshProUGUI highscoreText;
 
   public float startingTimer;
   public float currentTimer;
@@ -14,7 +17,7 @@ public class timerManager : MonoBehaviour
 
   private static float highestScore;
 
-  private inputReader game;
+  public inputReader game;
 
   private void Start()
   {
@@ -23,6 +26,8 @@ public class timerManager : MonoBehaviour
         UpdateTimer();
 
         highestScore = PlayerPrefs.GetFloat("HighestScore", 0f);
+        UpdateHighScore();
+
         game = FindObjectOfType<inputReader>();
   }
 
@@ -31,14 +36,17 @@ public class timerManager : MonoBehaviour
         if (timerActive)
         {
             currentTimer -= Time.deltaTime;
+
             UpdateTimer();
+            UpdateScore();
 
             if (currentTimer <= 0)
             {
                 currentTimer = 0;
                 timerActive = false;
-            
+
                 UpdateHighestScore();
+                scenesManager.Instance.LoadScene(scenesManager.Scene.EndMenu);
             }
         }
   }
@@ -49,6 +57,17 @@ public class timerManager : MonoBehaviour
         timerText.text = time.ToString(@"mm\:ss");
   }
 
+  void UpdateScore()
+  {
+        float currentScore = game.score;
+        scoreText.text = "Score: " + currentScore.ToString();
+  }
+
+  void UpdateHighScore()
+  {
+        highscoreText.text = "HighScore: " + highestScore.ToString();
+  }
+
   void UpdateHighestScore()
   {
         float currentScore = game.score;
@@ -57,21 +76,8 @@ public class timerManager : MonoBehaviour
         {
             highestScore = currentScore;
             PlayerPrefs.SetFloat("HighestScore", highestScore);
+            UpdateHighScore();
         }
   }
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
 
 }
