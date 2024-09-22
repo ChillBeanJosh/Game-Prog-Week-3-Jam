@@ -22,6 +22,7 @@ public class inputReader : MonoBehaviour
     private bool canInput = true; //bool toggle when an input is messed up working alongside the waitTime.
 
     public Animator enemyAnimator;
+    public Animator playerAnimator;
 
 
     void Start()
@@ -45,10 +46,14 @@ public class inputReader : MonoBehaviour
         //IF THE USER INPUTS THE CORRECT KEYCODE.
         if (Input.GetKeyDown(inputPattern[currentIndex]))
         {
+            TriggerAnimation(inputPattern[currentIndex]);
+
             enemyAnimator.SetTrigger("isHit");
             score++;
             Debug.Log("Correct input your score is :" + score);
             currentIndex++;
+
+
 
 
             //WHEN THE PATTERN REACHES THE END, RESETS AND CREATES A NEW ONE CAUSING A LOOP.
@@ -63,6 +68,7 @@ public class inputReader : MonoBehaviour
         else if (Input.anyKeyDown)
         {
             Debug.Log("Wrong input, you cannot do anything for " + waitTime + " seconds");
+            TriggerWrongInputAnimation();
             StartCoroutine(DisableInputs());
         }
     }
@@ -90,6 +96,35 @@ public class inputReader : MonoBehaviour
             KeyCode randomKey = possibleInputs[Random.Range(0, possibleInputs.Length)];
             inputPattern.Add(randomKey); 
         }
+    }
+
+
+    void TriggerAnimation(KeyCode key)
+    {
+        switch (key)
+        {
+            case KeyCode.W:
+                playerAnimator.SetTrigger("PlayerUp");
+                break;
+
+            case KeyCode.S:
+                playerAnimator.SetTrigger("PlayerDown");
+                break;
+
+            case KeyCode.A:
+                playerAnimator.SetTrigger("PlayerLeft");
+                break;
+
+            case KeyCode.D:
+                playerAnimator.SetTrigger("PlayerRight");
+                break;
+        }
+    }
+
+
+    void TriggerWrongInputAnimation()
+    {
+        playerAnimator.SetTrigger("WrongInput");
     }
 
 }
